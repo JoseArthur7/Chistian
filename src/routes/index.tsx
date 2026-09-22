@@ -51,6 +51,7 @@ function PackOpening() {
   const [phase, setPhase] = useState<"sealed" | "opening" | "cards">("sealed");
   const [packX, setPackX] = useState(0);
   const [tear, setTear] = useState(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const [focused, setFocused] = useState<number | null>(null);
   const [draggingCard, setDraggingCard] = useState<number | null>(null);
   const [positions, setPositions] = useState<CardPosition[]>(CARD_POSITIONS);
@@ -70,6 +71,7 @@ function PackOpening() {
     setPhase("sealed");
     setPackX(0);
     setTear(0);
+    setHasInteracted(false);
     setFocused(null);
     setDraggingCard(null);
     setPositions(CARD_POSITIONS);
@@ -77,6 +79,7 @@ function PackOpening() {
 
   const startPackDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (phase !== "sealed") return;
+    setHasInteracted(true);
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = { active: true, startX: event.clientX, originX: packX, lastX: event.clientX, lastTime: performance.now(), velocity: 0 };
   };
@@ -103,6 +106,7 @@ function PackOpening() {
 
   const startTear = (event: ReactPointerEvent<HTMLDivElement>) => {
     event.stopPropagation();
+    setHasInteracted(true);
     event.currentTarget.setPointerCapture(event.pointerId);
     tearRef.current = { active: true, startX: event.clientX };
   };
@@ -188,7 +192,7 @@ function PackOpening() {
           <div className={`pack-area ${phase === "opening" ? "is-opening" : ""}`} style={{ transform: `translateX(${packX}px)` }}>
             <div className="pack-shadow" />
             <div
-              className="pack"
+              className={`pack ${phase === "sealed" && !hasInteracted ? "is-idle" : ""}`}
               onPointerDown={startPackDrag}
               onPointerMove={movePack}
               onPointerUp={endPackDrag}
@@ -205,9 +209,6 @@ function PackOpening() {
               >
                 <div className="tear-line" style={{ width: `${Math.max(7, tear * 100)}%` }} />
                 <div className="tear-cue"><span>SWIPE TO OPEN</span><i>→</i></div>
-              </div>
-              <div className="pack-top" style={{ transform: `translate(${tear * 55}px, ${phase === "opening" ? -120 : 0}px) rotate(${tear * 9}deg)`, opacity: phase === "opening" ? 0 : 1 }}>
-                <img src={packUrl} alt="" draggable={false} />
               </div>
             </div>
           </div>
