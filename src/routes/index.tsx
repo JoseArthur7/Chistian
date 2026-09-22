@@ -2,14 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ExternalLink, RotateCcw, X } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
-import packAsset from "../assets/pack.jpeg.asset.json";
-import cardBackAsset from "../assets/card-back.jpeg.asset.json";
-import card1Asset from "../assets/card-1.png.asset.json";
-import card2Asset from "../assets/card-2.jpeg.asset.json";
-import card3Asset from "../assets/card-3.jpeg.asset.json";
-import card4Asset from "../assets/card-4.png.asset.json";
-import card5Asset from "../assets/card-5.png.asset.json";
-import card6Asset from "../assets/card-6.png.asset.json";
+const packUrl = "/cards/pack.png";
+const cardBackUrl = "/cards/card-back.png";
+const card1Url = "/cards/card-1.png";
+const card2Url = "/cards/card-2.png";
+const card3Url = "/cards/card-3.png";
+const card4Url = "/cards/card-4.png";
+const card5Url = "/cards/card-5.png";
+const card6Url = "/cards/card-6.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,12 +26,12 @@ export const Route = createFileRoute("/")({
 });
 
 const CARD_DATA = [
-  { front: card1Asset.url, link: "https://canva.link/7c3lr7l9ivsr96r" },
-  { front: card2Asset.url, link: "https://canva.link/07n44zbgqiubirk" },
-  { front: card3Asset.url, link: "https://canva.link/5aepgtuegbn3fzk" },
-  { front: card4Asset.url, link: "https://canva.link/vlt7ig4llrm0dll" },
-  { front: card5Asset.url, link: "https://canva.link/ygbj08k899209yq" },
-  { front: card6Asset.url, link: "https://canva.link/whbnv868kmylfoo" },
+  { front: card1Url, link: "https://canva.link/7c3lr7l9ivsr96r" },
+  { front: card2Url, link: "https://canva.link/07n44zbgqiubirk" },
+  { front: card3Url, link: "https://canva.link/5aepgtuegbn3fzk" },
+  { front: card4Url, link: "https://canva.link/vlt7ig4llrm0dll" },
+  { front: card5Url, link: "https://canva.link/ygbj08k899209yq" },
+  { front: card6Url, link: "https://canva.link/whbnv868kmylfoo" },
 ];
 
 const CARD_POSITIONS = [
@@ -194,7 +194,7 @@ function PackOpening() {
               onPointerUp={endPackDrag}
               onPointerCancel={endPackDrag}
             >
-              <img src={packAsset.url} alt="Booster pack" draggable={false} />
+              <img src={packUrl} alt="Booster pack" draggable={false} />
               <div className="pack-shine" />
               <div
                 className="tear-zone"
@@ -207,7 +207,7 @@ function PackOpening() {
                 <div className="tear-cue"><span>SWIPE TO OPEN</span><i>→</i></div>
               </div>
               <div className="pack-top" style={{ transform: `translate(${tear * 55}px, ${phase === "opening" ? -120 : 0}px) rotate(${tear * 9}deg)`, opacity: phase === "opening" ? 0 : 1 }}>
-                <img src={packAsset.url} alt="" draggable={false} />
+                <img src={packUrl} alt="" draggable={false} />
               </div>
             </div>
           </div>
@@ -234,7 +234,7 @@ function PackOpening() {
                   }}
                 >
                   <div className={`card-inner ${isFocused ? "is-flipped" : ""}`}>
-                    <div className="card-face card-back"><img src={cardBackAsset.url} alt={`Card ${id + 1}, face down`} draggable={false} /></div>
+                    <div className="card-face card-back"><img src={cardBackUrl} alt={`Card ${id + 1}, face down`} draggable={false} /></div>
                     <div className="card-face card-front"><img src={card.front} alt={`Card ${id + 1}`} draggable={false} /><div className="card-glint" /></div>
                   </div>
                 </div>
