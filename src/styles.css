@@ -1,0 +1,89 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+}
+
+:root {
+  --background: oklch(0.105 0.018 255);
+  --foreground: oklch(0.97 0.008 240);
+  --primary: oklch(0.79 0.15 83);
+  --primary-foreground: oklch(0.13 0.02 255);
+  --border: oklch(0.45 0.035 245 / 35%);
+  --surface: oklch(0.16 0.025 250);
+  --surface-soft: oklch(0.22 0.03 250 / 65%);
+  --gold: oklch(0.82 0.15 85);
+  --cyan: oklch(0.76 0.12 210);
+  --shadow: oklch(0.03 0.01 255 / 75%);
+  --overlay: oklch(0.04 0.015 255 / 82%);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: var(--background); }
+body { color: var(--foreground); font-family: "Trebuchet MS", "Avenir Next", sans-serif; user-select: none; }
+button { font: inherit; }
+
+.stage-shell { position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden; background: var(--background); }
+.stage { position: absolute; width: 1920px; height: 1080px; transform-origin: center; overflow: hidden; isolation: isolate; background: radial-gradient(circle at 50% 46%, var(--surface-soft), transparent 38%), linear-gradient(145deg, var(--background), var(--surface) 54%, var(--background)); }
+.stage::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .18; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(circle, black, transparent 75%); }
+.ambient { position: absolute; border: 1px solid var(--border); border-radius: 50%; opacity: .4; }
+.ambient-one { width: 720px; height: 720px; left: 600px; top: 180px; animation: orbit 28s linear infinite; }
+.ambient-two { width: 940px; height: 940px; left: 490px; top: 70px; border-style: dashed; animation: orbit 48s linear reverse infinite; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+
+.topbar { position: absolute; z-index: 50; top: 42px; left: 56px; right: 56px; display: flex; align-items: center; justify-content: space-between; }
+.brand-mark { display: flex; align-items: center; gap: 12px; letter-spacing: 0; }
+.brand-text { display: flex; flex-direction: column; gap: 4px; }
+.brand-text strong { font-size: 24px; font-weight: 900; }
+.brand-text span { color: var(--gold); font-size: 14px; font-weight: 700; letter-spacing: .04em; }
+.icon-button, .close-button { display: grid; place-items: center; border: 1px solid var(--border); color: var(--foreground); background: var(--surface-soft); cursor: pointer; transition: transform .2s ease, background-color .2s ease; }
+.icon-button { width: 52px; height: 52px; border-radius: 50%; }
+.icon-button:hover, .close-button:hover { transform: scale(1.08); background: var(--surface); }
+
+.pack-area { position: absolute; left: 50%; top: 51%; width: 430px; height: 760px; margin: -380px 0 0 -215px; transition: transform .65s cubic-bezier(.16,1,.3,1), opacity .7s ease; }
+.pack-area.is-opening { animation: pack-open .9s cubic-bezier(.6,0,.3,1) forwards; }
+@keyframes pack-open { 0% { transform: translateX(var(--pack-x, 0)) scale(1); filter: brightness(1); } 35% { transform: scale(1.07); filter: brightness(1.35); } 100% { transform: translateY(190px) scale(.55) rotate(5deg); filter: brightness(.6); opacity: 0; } }
+.pack-shadow { position: absolute; left: 12%; right: 12%; bottom: -25px; height: 70px; border-radius: 50%; background: var(--shadow); filter: blur(24px); }
+.pack { position: relative; width: 100%; height: 100%; cursor: grab; touch-action: none; filter: drop-shadow(0 28px 34px var(--shadow)); transition: transform .18s ease; }
+.pack:active { cursor: grabbing; transform: scale(1.015) rotate(.5deg); }
+.pack > img, .pack-top img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.pack-shine { position: absolute; inset: 20px 35px; background: linear-gradient(110deg, transparent 28%, color-mix(in oklab, var(--foreground) 20%, transparent) 45%, transparent 62%); background-size: 250% 100%; mix-blend-mode: screen; animation: foil 4s ease-in-out infinite; pointer-events: none; }
+@keyframes foil { 0%, 35% { background-position: 130% 0; } 75%, 100% { background-position: -80% 0; } }
+.tear-zone { position: absolute; z-index: 5; left: 25px; right: 25px; top: 54px; height: 104px; cursor: ew-resize; touch-action: none; }
+.tear-line { position: absolute; top: 40px; left: 0; height: 3px; border-radius: 5px; background: var(--cyan); box-shadow: 0 0 18px var(--cyan); transition: width .06s linear; }
+.tear-cue { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; color: var(--foreground); text-shadow: 0 2px 12px var(--shadow); opacity: .88; white-space: nowrap; }
+.tear-cue span { font-size: 13px; font-weight: 900; letter-spacing: 0; }
+.tear-cue i { font-size: 25px; font-style: normal; animation: nudge 1.4s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateX(12px); } }
+.pack-top { position: absolute; z-index: 4; left: 0; top: 0; width: 100%; height: 142px; overflow: hidden; transform-origin: 10% 75%; transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .45s ease; pointer-events: none; }
+.pack-top img { object-position: center top; }
+
+.card-field { position: absolute; z-index: 110; inset: 0; pointer-events: none; animation: field-in .7s ease-out both; }
+@keyframes field-in { from { opacity: 0; transform: scale(.84); } to { opacity: 1; transform: scale(1); } }
+.card-wrap { position: absolute; z-index: 10; width: 252px; height: 352px; perspective: 1100px; cursor: grab; touch-action: none; pointer-events: auto; transition: transform .45s cubic-bezier(.16,1,.3,1), left .45s cubic-bezier(.16,1,.3,1), top .45s cubic-bezier(.16,1,.3,1), filter .25s ease; animation: card-deal .65s cubic-bezier(.16,1,.3,1) both; }
+.card-wrap:hover:not(.is-focused) { filter: brightness(1.12) drop-shadow(0 24px 24px var(--shadow)); }
+.card-wrap:active { cursor: grabbing; }
+.card-wrap.is-dragging { z-index: 60; transition: none; filter: brightness(1.1) drop-shadow(0 30px 28px var(--shadow)); }
+.card-1 { animation-delay: .03s; } .card-2 { animation-delay: .1s; } .card-3 { animation-delay: .17s; } .card-4 { animation-delay: .24s; } .card-5 { animation-delay: .31s; } .card-6 { animation-delay: .38s; }
+@keyframes card-deal { from { left: 960px; top: 570px; opacity: 0; transform: translate(-50%, -50%) scale(.45) rotate(0); } }
+.card-wrap.is-focused { position: absolute; z-index: 110; left: 960px !important; top: 540px !important; width: 335px; height: 468px; cursor: pointer; filter: drop-shadow(0 38px 45px var(--shadow)); }
+.card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .72s cubic-bezier(.2,.7,.2,1); }
+.card-inner.is-flipped { transform: rotateY(180deg); }
+.card-face { position: absolute; inset: 0; overflow: hidden; border-radius: 13px; backface-visibility: hidden; background: var(--surface); box-shadow: inset 0 0 0 1px var(--border), 0 18px 30px var(--shadow); }
+.card-face img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+.card-front { transform: rotateY(180deg); }
+.card-glint { position: absolute; inset: -20%; opacity: .34; background: linear-gradient(115deg, transparent 36%, color-mix(in oklab, var(--foreground) 65%, transparent) 48%, transparent 59%); transform: translateX(-70%); animation: glint 2.8s 1s ease-in-out infinite; pointer-events: none; }
+@keyframes glint { 0%, 30% { transform: translateX(-70%); } 70%, 100% { transform: translateX(70%); } }
+.focus-overlay { position: absolute; z-index: 100; inset: 0; background: var(--overlay); backdrop-filter: blur(12px); animation: overlay-in .35s ease both; }
+.stage:has(.focus-overlay) .card-wrap:not(.is-focused) { filter: brightness(.2) blur(6px); pointer-events: none; }
+@keyframes overlay-in { from { opacity: 0; } }
+.close-button { position: absolute; z-index: 130; top: 54px; right: 64px; width: 62px; height: 62px; border-radius: 50%; }
+.link-hint { position: absolute; left: 50%; bottom: 52px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; color: var(--foreground); font-size: 16px; font-weight: 800; opacity: .78; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
